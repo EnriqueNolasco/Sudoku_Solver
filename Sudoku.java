@@ -116,43 +116,65 @@ public class Sudoku {
         }
 
         int[] temp0 = new int[2];
-        while(remaining > 0)  {
-            int event = 0;
-            for(int i = 0; i < 9; i++)  {
-                for(int j = 0; j < 9; j++)  {
-                    temp0 = fun(group, boxes, i, j);
+        try    {
+            while(remaining > 0)  {
+                int event = 0;
+                for(int i = 0; i < 9; i++)  {
+                    for(int j = 0; j < 9; j++)  {
+                        temp0 = fun(group, boxes, i, j);
+                        remaining -= temp0[0];
+                        if(event != 1) event = temp0[1];
+                        temp0 = equalBox(group, boxes, i, j);
+                        remaining -= temp0[0];
+                        if(event != 1) event = temp0[1];
+                        temp0 = fun(group, rows, i, j);
+                        remaining -= temp0[0];
+                        if(event != 1) event = temp0[1];
+                        temp0 = equalBox(group, rows, i, j);
+                        remaining -= temp0[0];
+                        if(event != 1) event = temp0[1];
+                        temp0= fun(group, columns, i, j);
+                        remaining -= temp0[0];
+                        if(event != 1) event = temp0[1];
+                        temp0 = equalBox(group, columns, i, j);
+                        remaining -= temp0[0];
+                        if(event != 1) event = temp0[1];
+                        if(remaining == 0) break;
+                    }
+                    temp0 = uniqueNumbers(group, boxes, i);
                     remaining -= temp0[0];
                     if(event != 1) event = temp0[1];
-                    temp0 = equalBox(group, boxes, i, j);
+                    temp0= uniqueNumbers(group, rows, i);
                     remaining -= temp0[0];
                     if(event != 1) event = temp0[1];
-                    temp0 = fun(group, rows, i, j);
-                    remaining -= temp0[0];
-                    if(event != 1) event = temp0[1];
-                    temp0 = equalBox(group, rows, i, j);
-                    remaining -= temp0[0];
-                    if(event != 1) event = temp0[1];
-                    temp0= fun(group, columns, i, j);
-                    remaining -= temp0[0];
-                    if(event != 1) event = temp0[1];
-                    temp0 = equalBox(group, columns, i, j);
+                    temp0 = uniqueNumbers(group, columns, i);
                     remaining -= temp0[0];
                     if(event != 1) event = temp0[1];
                     if(remaining == 0) break;
                 }
-                temp0 = uniqueNumbers(group, boxes, i);
-                remaining -= temp0[0];
-                if(event != 1) event = temp0[1];
-                temp0= uniqueNumbers(group, rows, i);
-                remaining -= temp0[0];
-                if(event != 1) event = temp0[1];
-                temp0 = uniqueNumbers(group, columns, i);
-                remaining -= temp0[0];
-                if(event != 1) event = temp0[1];
-                if(remaining == 0) break;
+                if(event == 0)  {
+                    throw new Exception("Nothing was found. Need more information");
+                }
             }
-            if(event == 0)  {
-                throw new Exception("Nothing was found. Need more information");
+        }
+        catch(Exception e)  {
+            for(int i = 0; i < 9; i++)  {
+                System.out.println("Row " + (i + 1));
+                for(int j = 0; j < 9; j++)  {
+                    System.out.print("Box " + (j + 1) + ": ");
+                    boolean check = true;
+                    for(int k = 0; k < 9; k++)  {
+                        if(rows.get(i).get(j).getPossibilities()[k])    {
+                            System.out.print((k + 1) + " ");
+                            check = false;
+                        }
+                    }
+                    if(check)   {
+                        System.out.print(rows.get(i).get(j).getNumber());
+                    }
+                    System.out.println();
+                }
+                System.out.println();
             }
         }
 
@@ -404,4 +426,5 @@ public class Sudoku {
         }
         return new int[] {0, event};
     }
+
 }
